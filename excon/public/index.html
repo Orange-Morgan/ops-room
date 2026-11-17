@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>EXCON · Exercise ORANGE CLOUD</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/excon.css" />
+  </head>
+  <body>
+    <div class="strip" aria-hidden="true">
+      <span>Exercise · Exercise · Exercise</span>
+      <span>Exercise control</span>
+    </div>
+
+    <header class="topbar">
+      <div class="sign">
+        <img src="/favicon.svg" alt="" />
+        <div>
+          <span class="sign-name">EXCON · <b>Orange Cloud</b></span>
+          <div class="sign-sub" id="summary">Waiting for ops rooms…</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="pill mono" id="clock">------Z</span>
+        <form class="pin" id="pin-form">
+          <input type="password" id="pin" placeholder="PIN" autocomplete="off" />
+          <button class="btn small" type="submit">Unlock</button>
+          <span class="pin-state" id="pin-state">Locked</span>
+        </form>
+      </div>
+    </header>
+
+    <div id="conditions"></div>
+
+    <main class="grid">
+      <section class="card">
+        <div class="card-head">
+          <h2 class="card-title">Injects</h2>
+          <label class="target">Send to
+            <select id="target">
+              <option value="all">All cells</option>
+              <option value="air">Air cells</option>
+              <option value="land">Land cells</option>
+            </select>
+          </label>
+        </div>
+        <div class="card-body injects">
+          <div class="inject">
+            <div>
+              <strong>Surge</strong>
+              <span>New requests from the distribution points. Some will be for sites a cell can't reach.</span>
+            </div>
+            <div class="row">
+              <select id="surge-count" aria-label="How many requests">
+                <option>2</option>
+                <option selected>3</option>
+                <option>4</option>
+                <option>6</option>
+              </select>
+              <button class="btn" data-inject="surge">Send surge</button>
+            </div>
+          </div>
+
+          <div class="inject">
+            <div>
+              <strong>Flash</strong>
+              <span>One FLASH request for medical supplies. Delivering it ticks the Flash traffic bonus.</span>
+            </div>
+            <div class="row">
+              <select id="flash-site" aria-label="Site"><option value="">Any site</option></select>
+              <button class="btn" data-inject="flash">Send flash</button>
+            </div>
+          </div>
+
+          <div class="inject">
+            <div>
+              <strong>Bridge out</strong>
+              <span>Cuts the road to a site. Land cells can't deliver there and have to hand over to an Air cell.</span>
+            </div>
+            <div class="row">
+              <select id="bridge-site" aria-label="Site"><option value="">Any open road</option></select>
+              <button class="btn" data-inject="bridge_out">Cut road</button>
+              <button class="btn ghost" data-inject="bridge_open">Reopen</button>
+            </div>
+          </div>
+
+          <div class="inject">
+            <div>
+              <strong>Weather</strong>
+              <span>Suspends flying. Air cells can't launch and have to hand over to a Land cell.</span>
+            </div>
+            <div class="row">
+              <button class="btn" data-inject="weather" data-flying="suspended">Suspend flying</button>
+              <button class="btn ghost" data-inject="weather" data-flying="open">Resume</button>
+            </div>
+          </div>
+
+          <div class="inject">
+            <div>
+              <strong>Message</strong>
+              <span>A line across the top of every ops board and the big screen.</span>
+            </div>
+            <div class="row">
+              <input type="text" id="message" maxlength="160" placeholder="ENDEX in ten minutes" />
+              <button class="btn" data-inject="message">Send</button>
+              <button class="btn ghost" data-inject="message" data-clear="1">Clear</button>
+            </div>
+          </div>
+
+          <div class="inject">
+            <div>
+              <strong>All clear</strong>
+              <span>Opens every road and resumes flying.</span>
+            </div>
+            <div class="row">
+              <button class="btn ghost" data-inject="all_clear">All clear</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="col">
+        <section class="card">
+          <div class="card-head">
+            <h2 class="card-title">Ops rooms</h2>
+            <span class="card-meta" id="cells-meta"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cell</th>
+                  <th>Phases</th>
+                  <th>Missions</th>
+                  <th>Open</th>
+                  <th>Held</th>
+                  <th>Delivered</th>
+                  <th>Partner</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="cells">
+                <tr><td colspan="8" class="muted">No ops rooms have joined yet. They join on their own once a team opens its ops board.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h2 class="card-title">Feed</h2>
+            <span class="card-meta">Live</span>
+          </div>
+          <ul class="feed" id="feed"></ul>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span class="muted">The big screen reads <code id="cop-url">/api/cop</code>. Ops rooms join at <code>/api/join</code>.</span>
+      <button class="btn ghost small" id="reset">Forget every ops room</button>
+    </footer>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+    <script src="/excon.js" type="module"></script>
+  </body>
+</html>

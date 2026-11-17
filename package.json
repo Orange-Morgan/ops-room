@@ -1,0 +1,68 @@
+{
+  "name": "ops-room",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Hackathon starter: an ops room with a REST API, a live board, an MCP server and an AI watchkeeper, all on one Cloudflare Worker.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "tsc --noEmit",
+    "types": "wrangler types",
+    "smoke": "node scripts/smoke.mjs",
+    "modelcheck": "node scripts/modelcheck.mjs",
+    "skip:mcp": "node scripts/skip.mjs mcp",
+    "skip:agent": "node scripts/skip.mjs agent",
+    "skip:joint": "node scripts/skip.mjs joint",
+    "skip:all": "node scripts/skip.mjs all",
+    "skip:stretch": "node scripts/skip.mjs stretch",
+    "excon:dev": "wrangler dev -c excon/wrangler.jsonc --port 8799",
+    "excon:deploy": "wrangler deploy -c excon/wrangler.jsonc"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.0.0",
+    "@modelcontextprotocol/server": "2.0.0",
+    "agents": "0.24.0",
+    "ai": "^7.0.118",
+    "workers-ai-provider": "^4.0.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.0",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.142.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "cloudflare": {
+    "label": "Exercise ORANGE CLOUD hackathon starter",
+    "products": [
+      "Workers",
+      "Durable Objects",
+      "Workers AI",
+      "Agents"
+    ],
+    "categories": [
+      "ai"
+    ],
+    "bindings": {
+      "MODEL": {
+        "description": "The [Workers AI model](https://developers.cloudflare.com/workers-ai/models/) your watchkeeper thinks with. The default works on the free plan."
+      },
+      "MODEL_FALLBACK": {
+        "description": "The model that steps in when the first one is slow or failing. Leave it as it is."
+      },
+      "EXCON_URL": {
+        "description": "Exercise control for the event. Your ops room reports here so it shows on the big screen. Leave it as it is, or empty it to run on your own."
+      },
+      "OPS": {
+        "description": "Your ops room's database: a Durable Object with SQLite that holds stores, requests, sites and the mission board."
+      },
+      "Watchkeeper": {
+        "description": "Your AI watchkeeper. Every chat session gets its own instance."
+      }
+    }
+  }
+}

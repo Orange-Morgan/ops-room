@@ -1,0 +1,27 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  // Exercise control (EXCON): the facilitators' Worker. It keeps a list of the
+  // ops rooms that have joined, builds the common operating picture for the big
+  // screen and sends injects. Attendees don't deploy this.
+  //
+  //   npm run excon:dev      local, on http://localhost:8799
+  //   npm run excon:deploy   deploy it
+  //   npx wrangler secret put EXCON_PIN -c excon/wrangler.jsonc   the PIN for the console
+  "name": "orange-cloud-excon",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-20",
+  "compatibility_flags": [
+    // EXCON calls ops rooms on other accounts' workers.dev hostnames.
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "EXERCISE", "class_name": "Exercise" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Exercise"] }],
+  "observability": { "enabled": true }
+}
