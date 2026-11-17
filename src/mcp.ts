@@ -60,33 +60,34 @@ export function createOpsMcpServer(cell: Cell) {
   // The schema is written for you. Fill in the handler: call cell.raiseRequest
   // and return the request it gives back, wrapped in asText(...).
   //
-  // server.registerTool(
-  //   "raise_request",
-  //   {
-  //     title: "Raise a request for support",
-  //     description: `${cell.label}: raise a request for support, a load of stores for one distribution point. Use site and store ids from get_sitrep. Stock is committed straight away. A request that takes a store below its reserve comes back with status "held" and waits for a human to approve it on the ops board. Returns the request number.`,
-  //     inputSchema: z.object({
-  //       site: z.string().describe("Site id: alpha, bravo, charlie, delta, echo, foxtrot, golf or hotel"),
-  //       items: z
-  //         .array(
-  //           z.object({
-  //             storeId: z.string().describe("Store id from get_sitrep, e.g. water"),
-  //             qty: z.number().int().min(1).max(24).default(1).describe("How many pallets")
-  //           })
-  //         )
-  //         .min(1)
-  //         .describe("What the site needs"),
-  //       precedence: z
-  //         .enum(["routine", "priority", "immediate", "flash"])
-  //         .default("routine")
-  //         .describe("How urgent it is. FLASH is life or death"),
-  //       note: z.string().max(140).optional().describe("Anything the crew should know, e.g. deliver to the school hall")
-  //     })
-  //   },
-  //   async ({ site, items, precedence, note }) => {
-  //     // your code here
-  //   }
-  // );
+   server.registerTool(
+    "raise_request",
+     {
+       title: "Raise a request for support",
+       description: `${cell.label}: raise a request for support, a load of stores for one distribution point. Use site and store ids from get_sitrep. Stock is committed straight away. A request that takes a store below its reserve comes back with status "held" and waits for a human to approve it on the ops board. Returns the request number.`,
+       inputSchema: z.object({
+         site: z.string().describe("Site id: alpha, bravo, charlie, delta, echo, foxtrot, golf or hotel"),
+         items: z
+           .array(
+             z.object({
+               storeId: z.string().describe("Store id from get_sitrep, e.g. water"),
+               qty: z.number().int().min(1).max(24).default(1).describe("How many pallets")
+             })
+           )
+           .min(1)
+           .describe("What the site needs"),
+         precedence: z
+           .enum(["routine", "priority", "immediate", "flash"])
+           .default("routine")
+           .describe("How urgent it is. FLASH is life or death"),
+         note: z.string().max(140).optional().describe("Anything the crew should know, e.g. deliver to the school hall")
+       })
+     },
+     async ({ site, items, precedence, note }) => {
+      const request = await cell.raiseRequest({ site, items, precedence, note });
+      return asText(request);
+      }
+   );
 
   // TODO 2: list_requests
   // Read-only, like get_sitrep. Both inputs are optional.
