@@ -107,7 +107,6 @@ export function createOpsMcpServer(cell: Cell) {
      },
      async ({ status, site }) => asText(await cell.listRequests({ status, site }))
        // your code here
-     }
    );
 
   // TODO 3: update_request_status
