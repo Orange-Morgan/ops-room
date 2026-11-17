@@ -91,24 +91,24 @@ export function createOpsMcpServer(cell: Cell) {
   // TODO 2: list_requests
   // Read-only, like get_sitrep. Both inputs are optional.
   //
-  // server.registerTool(
-  //   "list_requests",
-  //   {
-  //     title: "List requests",
-  //     description: `${cell.label}: list requests for support, newest first. "open" (the default) means anything not yet delivered or cancelled. Optionally filter by site.`,
-  //     inputSchema: z.object({
-  //       status: z
-  //         .enum(["open", "held", "requested", "tasked", "en_route", "delivered", "cancelled", "all"])
-  //         .default("open")
-  //         .describe("Which requests to show"),
-  //       site: z.string().optional().describe("Only this site id, e.g. echo")
-  //     }),
-  //     annotations: { readOnlyHint: true }
-  //   },
-  //   async ({ status, site }) => {
-  //     // your code here
-  //   }
-  // );
+  server.registerTool(
+    "list_requests",
+    {
+     title: "List requests",
+       description: `${cell.label}: list requests for support, newest first. "open" (the default) means anything not yet delivered or cancelled. Optionally filter by site.`,
+       inputSchema: z.object({
+        status: z
+           .enum(["open", "held", "requested", "tasked", "en_route", "delivered", "cancelled", "all"])
+           .default("open")
+           .describe("Which requests to show"),
+         site: z.string().optional().describe("Only this site id, e.g. echo")
+       }),
+       annotations: { readOnlyHint: true }
+     },
+     async ({ status, site }) => asText(await cell.listRequests({ status, site }))
+       // your code here
+     }
+   );
 
   // TODO 3: update_request_status
   // Requests move requested → tasked → en_route → delivered (or cancelled).
