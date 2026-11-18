@@ -113,26 +113,38 @@ export function createOpsMcpServer(cell: Cell) {
   // TODO 3: update_request_status
   // Requests move requested → tasked → en_route → delivered (or cancelled).
   //
-  // server.registerTool(
-  //   "update_request_status",
-  //   {
-  //     title: "Update a request's status",
-  //     description: `${cell.label}: move a request along: requested → tasked → en_route → delivered. Requests only move forward. "cancelled" cancels it and returns the stock. A held request can't move until a human approves it on the ops board.`,
-  //     inputSchema: z.object({
-  //       requestId: z.number().int().describe("The request number, e.g. 101"),
-  //       status: z.enum(["tasked", "en_route", "delivered", "cancelled"]).describe("The new status")
-  //     })
-  //   },
-  //   async ({ requestId, status }) => {
-  //     // your code here
-  //   }
-  // );
+   server.registerTool(
+     "update_request_status",
+     {
+       title: "Update a request's status",
+       description: `${cell.label}: move a request along: requested → tasked → en_route → delivered. Requests only move forward. "cancelled" cancels it and returns the stock. A held request can't move until a human approves it on the ops board.`,
+       inputSchema: z.object({
+         requestId: z.number().int().describe("The request number, e.g. 101"),
+         status: z.enum(["tasked", "en_route", "delivered", "cancelled"]).describe("The new status")
+       })
+     },
+     async ({ requestId, status }) => {asText(await cell.updateRequestStatus(requestId, status))
+       // your code here
+     }
+   );
 
   // TODO 4: resupply_store
   // This one's all yours: write the description and the inputSchema too.
   // Inputs: storeId (a string) and quantity (a whole number of pallets, 1 to 50).
   // Then call cell.resupplyStore(storeId, quantity).
   // Start the description with `${cell.label}:` like the others.
+  server.registerTool(
+  "resupply_store",
+  {
+    title: "Resupply a store",
+    description: `${cell.label}: add pallets to a store, for example after a resupply run. Use store ids from get_sitrep.`,
+    inputSchema: z.object({
+      storeId: z.string().describe("Store id from get_sitrep"),
+      quantity: z.number().int().min(1).max(50).describe("How many pallets to add")
+    })
+  },
+  async ({ storeId, quantity }) => asText(await cell.resupplyStore(storeId, quantity))
+);
 
   return server;
 }
